@@ -7,7 +7,7 @@ public class Lab5 {
         new Lab5();
     }
 
-    public static class state {
+    public class state {
 
         int len, link;
         HashMap<Character, Integer> next = new HashMap<Character, Integer>();
@@ -21,11 +21,11 @@ public class Lab5 {
 
     };
 
-    public static state[] st=new state[1000];
-    public static int sz, last;
-    public static HashSet<Integer> res = new HashSet<Integer>();
+    public state[] st=new state[1000];
+    public int sz, last;
+    public HashSet<Integer> res = new HashSet<Integer>();
 
-    public static void sa_init() {
+    public void sa_init() {
         sz = last = 0;
         if (st[0] == null) {
             st[0] = new state();
@@ -36,7 +36,7 @@ public class Lab5 {
 
     }
 
-    public static void sa_extend(char c) {
+    public  void sa_extend(char c) {
         int cur = sz++;
         if (st[cur] == null) {
             st[cur] = new state();
@@ -74,7 +74,7 @@ public class Lab5 {
         last = cur;
     }
 
-    public static void output_all_occurences(int v, int P_length) {
+    public  void output_all_occurences(int v, int P_length) {
         if (!st[v].is_clon) {
             res.add(st[v].first_pos - P_length + 2);
         }
@@ -85,50 +85,50 @@ public class Lab5 {
 
     public Lab5() {
         Scanner in=new Scanner(System.in);
-        for (;;)
-        {
-            out("Введите текст");
-            String s1=in.nextLine();
-            if(s1.equals("exit"))break;
-            out("Введите искомую строку");
-            String s2=in.nextLine();
-            if(s2.equals("exit"))break;
+        out("Введите текст");
+        String s1=in.nextLine();
+        out("Введите искомую строку");
+        String s2=in.nextLine();
 
-            sa_init();
-            for (int i = 0; i < s1.length(); i++) {
-                sa_extend(s1.charAt(i));
-            }
-            for (int v = 1; v < sz; ++v) {
-                st[st[v].link].inv_link.add(v);
-            }
-            state elem = st[0];
-            int a = 0;
-            for (int i = 0; i < s2.length(); i++) {
-                if (elem.next.containsKey(s2.charAt(i))) {
-                    a = elem.next.get(s2.charAt(i));
-                    elem = st[a];
-                } else {
-                    a = -1;
-                    break;
-                }
-            }
-            if (a != -1) {
-                output_all_occurences(a, s2.length());
-            }
-            out("Counts = "+res.size());
-            elem=null;
-            st= null;
-            int n =res.size();
-            Integer[] b;
-            b = res.toArray(new Integer[res.size()]);
-            res=null;
-            Arrays.sort(b);
-            for (int i = 0; i < n; i++) {
-                out(b[i] + " ");
-            }
-
+        sa_init();
+        for (int i = 0; i < s1.length(); i++) {
+            sa_extend(s1.charAt(i));
         }
+        for (int v = 1; v < sz; ++v) {
+            st[st[v].link].inv_link.add(v);
+        }
+        state elem = st[0];
+        int a = 0;
+        for (int i = 0; i < s2.length(); i++) {
+            if (elem.next.containsKey(s2.charAt(i))) {
+
+                a = elem.next.get(s2.charAt(i));
+                elem = st[a];
+            } else {
+                a = -1;
+                break;
+            }
+        }
+        if (a != -1) {
+            output_all_occurences(a, s2.length());
+        }
+        out("Количество вхождений = "+res.size());
+        out("Все подстроки");
+        outAutomat();
+    }
+    boolean checkInput(String s)
+    {
+        return true;
     }
      void out(String s){System.out.println(s);}
-
+     void outAutomat(){
+        outAutomat(0,"");
+     }
+     void outAutomat(int i,String str)
+     {
+         out(str);
+         for (Map.Entry entry : st[i].next.entrySet()) {
+             outAutomat((int)entry.getValue(),new String(str+entry.getKey()+" "));
+         }
+     }
 }
